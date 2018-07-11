@@ -1,8 +1,11 @@
 package com.example.arunpandey.timertiktak;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -24,6 +27,7 @@ public class SQLoperations {
     {
         this.context = context;
         db = context.openOrCreateDatabase(dataBase,MODE_PRIVATE,null);
+        Log.d("table", "database created");
     }
 
    public static SQLoperations getInstance(Context context)
@@ -41,8 +45,13 @@ public class SQLoperations {
     void createTable()
     {
         try {
-            db.execSQL("CREATE TABLE IF NOT EXISTS " +tablename+ "(TimerDate VARCHAR,TimerName VARCHAR,TimerDuration VARCHAR)");
+           // Log.d("table" , "created");
+            db.execSQL("CREATE TABLE IF NOT EXISTS " +tablename+ "(TimerDate VARCHAR,TimerName VARCHAR,TimerDuration VARCHAR);");
+
+            Log.d("table" , "created");
+
         } catch (Exception e) {
+            Log.d("table" , "Not created");
             throw e;
         }
     }
@@ -58,6 +67,7 @@ public class SQLoperations {
         }
         catch (Exception e) {
             /* fail */
+            Log.d("table","not created...false return");
             return false;
         }
         return true;
@@ -65,11 +75,23 @@ public class SQLoperations {
 
     void insert(String TimerDate,String TimerName,String TimerDuration) {
 
-        db.execSQL("INSERT INTO " +tablename+ " VALUES('" +TimerDate+","+TimerName+","+TimerDuration+"')");
+        Log.d("table" ,"insert function call");
+
+       // db.execSQL("INSERT INTO "+tablename+" VALUES ('"+TimerDate/*+','+TimerName+','+TimerDuration*/+"');");
+
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("TimerDate",TimerDate);
+        contentValues.put("TimerName",TimerName);
+        contentValues.put("TimerDuration",TimerDuration);
+        long result = db.insert(tablename,null ,contentValues);
+        if(result == -1)
+            Log.d("Value","no  vaule  entered");
+        else
+            Log.d("Value"," vaule  entered");
 
     }
 
-    ArrayList<String> getTimerList(String tablename) {
+    ArrayList<String> getTimerList() {
         Cursor c = db.rawQuery("SELECT * FROM " +tablename+ "",null);
 
         ArrayList<String> list = new ArrayList<>();
@@ -79,9 +101,9 @@ public class SQLoperations {
                 int index1 = c.getColumnIndex("TimerDate");
                 int index2 = c.getColumnIndex("TimerName");
                 int index3 = c.getColumnIndex("TimerDuration");
-                String note = c.getString(index1)+" "+c.getString(index2)+" "+c.getString(index3);
+                String time = c.getString(index2)+" Date:"+c.getString(index1)+" Duration: "+c.getString(index3);
                 //   Log.d("username",note);
-                list.add(note);
+                list.add(time);
             } while (c.moveToNext());
         }
         return  list;
