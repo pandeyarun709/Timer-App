@@ -1,6 +1,7 @@
 package com.example.arunpandey.timertiktak;
 
 import android.content.DialogInterface;
+import android.media.MediaPlayer;
 import android.os.CountDownTimer;
 import android.os.SystemClock;
 import android.support.v7.app.AlertDialog;
@@ -39,7 +40,7 @@ public class TimerActivity extends AppCompatActivity {
     private  String timeView;
 
     private String currentDateandTime;
-    private String timerName = "Arun";
+    private String timerName = "Timer";
     private String timerDuration;
 
 
@@ -155,7 +156,7 @@ public class TimerActivity extends AppCompatActivity {
 
             @Override
             public void onFinish() {
-
+                timerSound();
                 isTimerRunning = false;
                 start.setText("START");
                 resetseek();
@@ -185,6 +186,7 @@ public class TimerActivity extends AppCompatActivity {
         countDownTimer.cancel();
         isTimerRunning = false;
         resetseek();
+        timerSound();
 
     }
 
@@ -257,7 +259,27 @@ public class TimerActivity extends AppCompatActivity {
     private  void insertData()
     {
         sql.insert(currentDateandTime,timerName,timerDuration);
+
     }
+
+    /*-------------------------- sound function ------------------*/
+
+    private  void timerSound()
+    {
+        final MediaPlayer mp = MediaPlayer.create(getApplicationContext(), R.raw.tone);
+        mp.start();
+
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                mp.release();
+
+            }
+        },4000);
+
+
+    }
+
 
 
 
