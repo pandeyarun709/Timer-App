@@ -42,7 +42,7 @@ public class TimerActivity extends AppCompatActivity {
     private String currentDateandTime;
     private String timerName = "Timer";
     private String timerDuration;
-
+    private boolean check = true;
 
     private  SeekBar seekBar;
 
@@ -82,7 +82,15 @@ public class TimerActivity extends AppCompatActivity {
                     {
                         Toast.makeText(getApplicationContext(),"First set the timer !", Toast.LENGTH_SHORT).show();
                     }
-                    else startTimer();
+                    else {
+                        startTimer();
+                        if(check == true)
+                        {
+                            insertData(); // inserting data in db
+                            check = false;
+                        }
+
+                    }
 
                 }
             }
@@ -108,7 +116,7 @@ public class TimerActivity extends AppCompatActivity {
                 timeleft = 1000 * progress;
                 updateCountDownText();
 
-                timerDuration = timeView ;
+                timerDuration = timeView ; //get timeduration
 
 
             }
@@ -128,7 +136,7 @@ public class TimerActivity extends AppCompatActivity {
 
                 openDialogBox(); //dialoge box
 
-                insertData(); // inserting data in db
+
 
 
             }
@@ -160,6 +168,9 @@ public class TimerActivity extends AppCompatActivity {
                 isTimerRunning = false;
                 start.setText("START");
                 resetseek();
+
+                check =true;
+
             }
         }.start();
 
@@ -187,6 +198,7 @@ public class TimerActivity extends AppCompatActivity {
         isTimerRunning = false;
         resetseek();
         timerSound();
+        check =true;
 
     }
 
